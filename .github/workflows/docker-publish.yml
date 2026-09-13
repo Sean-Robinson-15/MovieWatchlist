@@ -1,0 +1,35 @@
+name: Build and publish Docker image
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker-setup/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/sean-robinson-15/moviewatchlist:latest
+            ghcr.io/sean-robinson-15/moviewatchlist:${{ github.sha }}
