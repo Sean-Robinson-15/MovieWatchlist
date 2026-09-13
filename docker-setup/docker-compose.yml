@@ -1,17 +1,28 @@
 services:
   app:
     image: ghcr.io/sean-robinson-15/moviewatchlist:latest
+    pull_policy: always
     container_name: moviewatchlist
     ports:
       - "8002:8000"
-
     env_file:
-      - ../.env
-
+      - .env
     volumes:
       - moviewatchlist_storage:/app/storage
-
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
     restart: unless-stopped
+    
+###-- OPTIONAL watchtower service to auto-update the image--###
+  # watchtower:
+  #   image: containrrr/watchtower:latest
+  #   container_name: watchtower
+  #   environment:
+  #     DOCKER_API_VERSION: "1.40"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command: --label-enable --interval 30 --cleanup
+  #   restart: unless-stopped
 
 volumes:
   moviewatchlist_storage:
