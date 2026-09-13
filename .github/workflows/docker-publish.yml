@@ -33,3 +33,7 @@ jobs:
           tags: |
             ghcr.io/sean-robinson-15/moviewatchlist:latest
             ghcr.io/sean-robinson-15/moviewatchlist:${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/Sean-Robinson-15/MovieWatchlist
+            org.opencontainers.image.description=MovieWatchlist application
+            org.opencontainers.image.title=MovieWatchlist
