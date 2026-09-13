@@ -1,0 +1,5 @@
+.env
+/vendor/
+/storage/*.sqlite
+/storage/*.sqlite-shm
+/storage/*.sqlite-wal
