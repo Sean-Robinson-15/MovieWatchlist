@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: docker-setup/Dockerfile
+          file: docker-setup/dockerfile
           push: true
           tags: |
             ghcr.io/sean-robinson-15/moviewatchlist:latest
