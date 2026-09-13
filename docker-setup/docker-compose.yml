@@ -1,27 +1,17 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      network: host
-      args:
-        REPO_URL: https://github.com/Sean-Robinson-15/MovieWatchlist.git
-        REF: main
+    image: ghcr.io/sean-robinson-15/moviewatchlist:latest
     container_name: moviewatchlist
     ports:
       - "8002:8000"
-    environment:
-      APP_ENV: ${APP_ENV:-local}
-      APP_NAME: ${APP_NAME:-MovieWatchlist}
-      APP_URL: ${APP_URL:-http://localhost:8000}
-      DB_PATH: ${DB_PATH:-storage/database.sqlite}
-      TMDB_API_KEY: ${TMDB_API_KEY:-your_tmdb_api_key}
-      TMDB_BASE_URL: ${TMDB_BASE_URL:-https://api.themoviedb.org/3}
+
+    env_file:
+      - ../.env
+
     volumes:
       - moviewatchlist_storage:/app/storage
+
     restart: unless-stopped
 
 volumes:
   moviewatchlist_storage:
-
-

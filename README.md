@@ -19,6 +19,13 @@ A server-rendered PHP movie watchlist built with an N-Tier architecture.
 - `database/migrations/`: SQLite schema
 - `tests/`: automated tests
 
+## Docker Setup
+
+1. create/navigate-to the folder you would like to contain the project and copy over the docker-compose.yml in docker-setup. (Remember to make any necessary alterations, such as the port mapping.)
+3. copy over `.env.example` as `.env` into the same folder. Remembering to add in your API key for TMDB
+4. from a commandline inside the project folder, run `docker compose pull`
+5. Finally, run `docker compose up -d` (Or ignore the -d if you would like a live readout from the container)
+
 ## Local setup
 
 1. Install PHP and Composer, ensuring both commands are available on PATH.
@@ -30,7 +37,7 @@ A server-rendered PHP movie watchlist built with an N-Tier architecture.
 composer serve
 ```
 
-5. Open <http://localhost:8000>.
+5. Open <http://localhost:8002>.
 
 The SQLite database is created automatically at `storage/database.sqlite` on the first request.
 
