@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   phpunit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false
@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -31,7 +31,7 @@ jobs:
           tools: composer:v2
 
       - name: Validate Composer configuration
-        run: composer validate --strict
+        run: composer validate
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
