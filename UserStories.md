@@ -2,7 +2,7 @@
 # User Stories
 
 
-## Epic 1 : Account Management
+## Epic-01 : Account Management
 
 
 ### US-01 : Create an Account
@@ -46,7 +46,7 @@
 - [ ] The user is redirected home
 - [ ] Protected pages require authentication again after logout
 
-## Epic 2 : Movie Discovery
+## Epic-02 : Movie Discovery
 
 ### US-04 : Search for movies
 
@@ -135,7 +135,7 @@
 - [ ] Removing an item does not remove the shared movie record
 - [ ] The user is redirected back to their watchlist
 
-## Epic 2 - Group functionality User Stories
+## Epic-03 - Group functionality User Stories
 
 ### US-10 : Create a group for shared watchlist
 
@@ -220,9 +220,7 @@
  - [ ] The users current selection is clearly visible
  - [ ] A non-member cannot access or submit a vote
 
-
-
-## Epic 3 - Non-Functional User Stories
+## Epic-04 - Non-Functional User Stories
 
 ### US-15 : Usable error handling
 
