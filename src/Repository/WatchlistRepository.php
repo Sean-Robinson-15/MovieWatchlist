@@ -59,4 +59,28 @@ final class WatchlistRepository
         $statement = $this->pdo->prepare('DELETE FROM watchlist_items WHERE id = :id AND user_id = :user_id');
         $statement->execute(['id' => $itemId, 'user_id' => $userId]);
     }
+
+    public function aggregateForGroup(int $groupId, string $filter = 'planned'): array
+    {
+        $sql = 'SELECT m.id, m.title, m.overview, m.poster_path, m.release_date,
+                       SUM(CASE WHEN wi.status = \'planned\' THEN 1 ELSE 0 END) AS planned_count,
+                       SUM(CASE WHEN wi.status = \'watching\' THEN 1 ELSE 0 END) AS watching_count,
+                       SUM(CASE WHEN wi.status = \'watched\' THEN 1 ELSE 0 END) AS watched_count
+                FROM movies m
+                JOIN watchlist_items wi ON wi.movie_id = m.id
+                JOIN group_memberships gm ON gm.group_id = :group_id AND gm.user_id = wi.user_id
+                GROUP BY m.id';
+
+        if ($filter === 'all') {
+            $sql .= ' ORDER BY m.title COLLATE NOCASE';
+        } else {
+            $column = $filter . '_count';
+            $sql .= " HAVING {$column} > 0 ORDER BY {$column} DESC, m.title COLLATE NOCASE";
+        }
+
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute(['group_id' => $groupId]);
+
+        return $statement->fetchAll();
+    }
 }

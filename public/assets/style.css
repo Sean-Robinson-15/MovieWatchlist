@@ -52,6 +52,7 @@ small, .form-note { color: var(--muted); font-size: .7rem; }
 .empty-state { padding: 70px 0; }
 .empty-mark { color: var(--accent); font-family: Fraunces, Georgia, serif; font-size: 5rem; line-height: 1; }
 .filters { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 28px; font-size: .72rem; }
+.filter-active { color: var(--accent); font-weight: 500; }
 .search-form { display: flex; max-width: 650px; gap: 10px; margin-top: 28px; }
 .search-form input { flex: 1; }
 .movie-grid, .watchlist-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding-top: 38px; }
@@ -65,6 +66,22 @@ small, .form-note { color: var(--muted); font-size: .7rem; }
 select, textarea { width: 100%; border: 1px solid var(--line); padding: 10px; color: var(--ink); background: var(--paper); font: inherit; font-size: .72rem; }
 textarea { resize: vertical; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.group-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 36px 0; border-bottom: 1px solid var(--line); }
+.inline-panel { display: flex; align-items: end; gap: 12px; padding: 20px; background: var(--white); border: 1px solid var(--line); }
+.inline-panel label { flex: 1; }
+.group-grid, .group-movie-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding-top: 38px; }
+.group-card, .group-movie-card { display: block; padding: 24px; color: inherit; background: var(--white); border: 1px solid var(--line); text-decoration: none; }
+.group-card:hover, .group-movie-card.vote-selected { border-color: var(--accent); }
+.group-card h2, .group-movie-card h2 { margin: 10px 0 14px; font-size: 1.75rem; }
+.group-card span { color: var(--muted); font-size: .7rem; }
+.group-movie-card > p:not(.movie-year) { min-height: 66px; color: var(--muted); font-size: .72rem; }
+.status-counts { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0; }
+.status-counts span { padding: 5px 8px; color: var(--muted); background: var(--paper); font-size: .64rem; }
+.status-counts strong { color: var(--accent); }
+.group-meta { display: flex; justify-content: space-between; gap: 24px; padding: 28px 0 0; }
+.group-meta > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
+.group-meta > div > span { width: 100%; color: var(--accent); font-size: .68rem; text-transform: uppercase; }
+.group-meta p { margin: 0; color: var(--muted); font-size: .7rem; }
 @media (max-width: 640px) {
     .site-header { padding: 22px 20px; }
     nav { gap: 12px; }
@@ -78,4 +95,7 @@ textarea { resize: vertical; }
     .auth-panel h1 { font-size: 3.2rem; }
     .search-form { align-items: stretch; flex-direction: column; }
     .movie-grid, .watchlist-grid { grid-template-columns: 1fr; }
+    .group-actions, .group-grid, .group-movie-grid { grid-template-columns: 1fr; }
+    .inline-panel { align-items: stretch; flex-direction: column; }
+    .group-meta { align-items: flex-start; flex-direction: column; }
 }

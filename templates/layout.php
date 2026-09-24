@@ -16,6 +16,7 @@ unset($_SESSION['error']);
         <?php if (!empty($_SESSION['user_id'])): ?>
             <a href="/search">Find films</a>
             <a href="/watchlist">My watchlist</a>
+            <a href="/groups">Groups</a>
             <form method="post" action="/logout" class="inline-form"><input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Infrastructure\Csrf::token(), ENT_QUOTES, 'UTF-8') ?>"><button type="submit" class="button button-quiet">Log out</button></form>
         <?php else: ?>
             <a href="/login">Log in</a>

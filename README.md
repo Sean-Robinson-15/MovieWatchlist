@@ -39,10 +39,16 @@ composer serve
 
 5. Open <http://localhost:8002>.
 
-The SQLite database is created automatically at `storage/database.sqlite` on the first request.
+The SQLite database is created automatically at `storage/database.sqlite` on the first request. Numbered migrations are applied automatically, including upgrades to an existing database.
 
 ## Current foundation slice
 
 The application currently includes the landing page, account registration, login, logout, protected routes, SQLite migrations, password hashing, CSRF protection, TMDB search, movie persistence, and user-scoped watchlist actions for adding, filtering, updating, and removing films.
 
 When `TMDB_API_KEY` is empty, search returns no external results but the rest of the application remains available. Obtain a key from TMDB and add it only to your local `.env` file.
+
+## Groups
+
+Authenticated users can open **Groups**, create a group, or join one with its six-character code. A user may belong to multiple groups. Group pages use URLs such as `/groups/1` and show read-only aggregate counts from members' personal watchlists. Planned, Watching, and Watched sort by the number of members in that status; All sorts alphabetically.
+
+The **Watch next** page gives each member one active vote. Voting for another movie moves the vote, and selecting the current movie again removes it. Votes never change another member's personal status, rating, or notes.

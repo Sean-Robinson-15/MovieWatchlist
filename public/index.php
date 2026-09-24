@@ -8,11 +8,15 @@ use App\Infrastructure\Database;
 use App\Routing\Router;
 use App\Infrastructure\TmdbClient;
 use App\Presentation\View;
+use App\Repository\GroupRepository;
 use App\Repository\MovieRepository;
 use App\Repository\UserRepository;
+use App\Repository\VoteRepository;
 use App\Repository\WatchlistRepository;
 use App\Service\AuthService;
+use App\Service\GroupService;
 use App\Service\MovieService;
+use App\Service\VoteService;
 use App\Service\WatchlistService;
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -23,7 +27,11 @@ $pdo = Database::connect($config);
 $view = new View($root . '/templates');
 $auth = new AuthService(new UserRepository($pdo));
 $movieService = new MovieService(new TmdbClient($config), new MovieRepository($pdo));
-$watchlist = new WatchlistService(new WatchlistRepository($pdo));
+$watchlistRepository = new WatchlistRepository($pdo);
+$watchlist = new WatchlistService($watchlistRepository);
+$groupRepository = new GroupRepository($pdo);
+$groupService = new GroupService($groupRepository);
+$voteService = new VoteService(new VoteRepository($pdo), $groupRepository, $watchlistRepository);
 $router = new Router();
 
 $router->get('/', static function () use ($view): string {
@@ -164,6 +172,124 @@ $router->post('/watchlist/remove', static function () use ($watchlist): never {
         $watchlist->remove((int) $_SESSION['user_id'], (int) ($_POST['item_id'] ?? 0));
     }
     header('Location: /watchlist');
+    exit;
+});
+
+$router->get('/groups', static function () use ($view, $groupService): string {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    return $view->render('groups', [
+        'title' => 'My groups',
+        'groups' => $groupService->allForUser((int) $_SESSION['user_id']),
+    ]);
+});
+
+$router->post('/groups/create', static function () use ($groupService): never {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    try {
+        Csrf::verify((string) ($_POST['_token'] ?? ''));
+        $groupId = $groupService->create((int) $_SESSION['user_id'], (string) ($_POST['name'] ?? ''));
+        header('Location: /groups/' . $groupId);
+        exit;
+    } catch (Throwable $error) {
+        $_SESSION['error'] = $error->getMessage();
+        header('Location: /groups');
+        exit;
+    }
+});
+
+$router->post('/groups/join', static function () use ($groupService): never {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    try {
+        Csrf::verify((string) ($_POST['_token'] ?? ''));
+        $groupId = $groupService->join((int) $_SESSION['user_id'], (string) ($_POST['join_code'] ?? ''));
+        header('Location: /groups/' . $groupId);
+        exit;
+    } catch (Throwable $error) {
+        $_SESSION['error'] = $error->getMessage();
+        header('Location: /groups');
+        exit;
+    }
+});
+
+$router->get('/groups/{id}', static function (int $groupId) use ($view, $groupService, $watchlistRepository): string {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    $userId = (int) $_SESSION['user_id'];
+    $group = $groupService->getForMember($groupId, $userId);
+    $filter = in_array($_GET['filter'] ?? 'planned', ['all', 'planned', 'watching', 'watched'], true)
+        ? (string) $_GET['filter']
+        : 'planned';
+
+    return $view->render('group', [
+        'title' => $group['name'],
+        'group' => $group,
+        'filter' => $filter,
+        'items' => $watchlistRepository->aggregateForGroup($groupId, $filter),
+        'members' => $groupService->members($groupId, $userId),
+    ]);
+});
+
+$router->post('/groups/{id}/leave', static function (int $groupId) use ($groupService): never {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    try {
+        Csrf::verify((string) ($_POST['_token'] ?? ''));
+        $groupService->leave($groupId, (int) $_SESSION['user_id']);
+        header('Location: /groups');
+        exit;
+    } catch (Throwable $error) {
+        $_SESSION['error'] = $error->getMessage();
+        header('Location: /groups/' . $groupId);
+        exit;
+    }
+});
+
+$router->get('/groups/{id}/watch-next', static function (int $groupId) use ($view, $groupService, $voteService): string {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    $userId = (int) $_SESSION['user_id'];
+    $group = $groupService->getForMember($groupId, $userId);
+    return $view->render('watch-next', [
+        'title' => 'Watch next · ' . $group['name'],
+        'group' => $group,
+        'items' => $voteService->listForGroup($groupId, $userId),
+    ]);
+});
+
+$router->post('/groups/{id}/vote', static function (int $groupId) use ($voteService): never {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    try {
+        Csrf::verify((string) ($_POST['_token'] ?? ''));
+        $voteService->toggle($groupId, (int) $_SESSION['user_id'], (int) ($_POST['movie_id'] ?? 0));
+    } catch (Throwable $error) {
+        $_SESSION['error'] = $error->getMessage();
+    }
+    header('Location: /groups/' . $groupId . '/watch-next');
     exit;
 });
 

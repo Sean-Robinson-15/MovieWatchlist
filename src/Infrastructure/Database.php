@@ -35,7 +35,36 @@ final class Database
 
     private static function migrate(PDO $pdo): void
     {
-        $migration = dirname(__DIR__, 2) . '/database/migrations/001_initial.sql';
-        $pdo->exec((string) file_get_contents($migration));
+        $pdo->exec(
+            'CREATE TABLE IF NOT EXISTS schema_migrations (
+                version TEXT PRIMARY KEY,
+                applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )'
+        );
+
+        $migrationDirectory = dirname(__DIR__, 2) . '/database/migrations';
+        $migrations = glob($migrationDirectory . '/*.sql') ?: [];
+        sort($migrations, SORT_STRING);
+
+        foreach ($migrations as $migration) {
+            $version = basename($migration, '.sql');
+            $statement = $pdo->prepare('SELECT 1 FROM schema_migrations WHERE version = :version');
+            $statement->execute(['version' => $version]);
+
+            if ($statement->fetchColumn() !== false) {
+                continue;
+            }
+
+            $pdo->beginTransaction();
+            try {
+                $pdo->exec((string) file_get_contents($migration));
+                $record = $pdo->prepare('INSERT INTO schema_migrations (version) VALUES (:version)');
+                $record->execute(['version' => $version]);
+                $pdo->commit();
+            } catch (\Throwable $error) {
+                $pdo->rollBack();
+                throw $error;
+            }
+        }
     }
 }

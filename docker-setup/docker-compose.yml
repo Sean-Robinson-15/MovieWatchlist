@@ -12,7 +12,7 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
     restart: unless-stopped
-    
+
 ###-- OPTIONAL watchtower service to auto-update the image--###
   # watchtower:
   #   image: containrrr/watchtower:latest
