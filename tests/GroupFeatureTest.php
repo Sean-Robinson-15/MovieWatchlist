@@ -7,6 +7,8 @@ namespace Tests;
 use App\Repository\GroupRepository;
 use App\Repository\VoteRepository;
 use App\Repository\WatchlistRepository;
+use App\Service\GroupService;
+use App\Service\VoteService;
 use PHPUnit\Framework\TestCase;
 use PDO;
 
@@ -39,6 +41,15 @@ final class GroupFeatureTest extends TestCase
         self::assertSame(['Alpha', 'Beta'], array_column($all, 'title'));
     }
 
+    public function testInvalidStatusFilterDefaultsToPlannedSafely(): void
+    {
+        $this->pdo->exec("INSERT INTO watchlist_items (user_id, movie_id, status) VALUES (1, 1, 'planned'), (1, 2, 'watching')");
+        $repository = new WatchlistRepository($this->pdo);
+
+        self::assertSame(['Beta'], array_column($repository->aggregateForGroup(1, ''), 'title'));
+        self::assertSame(['Beta'], array_column($repository->aggregateForGroup(1, 'invalid'), 'title'));
+    }
+
     public function testGroupCreationAddsOwnerMembershipAndJoinIsIdempotent(): void
     {
         $repository = new GroupRepository($this->pdo);
@@ -60,5 +71,34 @@ final class GroupFeatureTest extends TestCase
 
         self::assertSame(2, $repository->currentMovieId(1, 1));
         self::assertSame(1, (int) $repository->countsForGroup(1, 1)[0]['vote_count']);
+    }
+
+    public function testVoteServiceTogglesAndRejectsMoviesOutsideTheGroup(): void
+    {
+        $this->pdo->exec("INSERT INTO watchlist_items (user_id, movie_id, status) VALUES (1, 1, 'planned')");
+        $groupRepository = new GroupRepository($this->pdo);
+        $voteService = new VoteService(
+            new VoteRepository($this->pdo),
+            $groupRepository,
+            new WatchlistRepository($this->pdo)
+        );
+
+        $voteService->toggle(1, 1, 1);
+        $voteService->toggle(1, 1, 1);
+
+        self::assertNull((new VoteRepository($this->pdo))->currentMovieId(1, 1));
+        $this->expectException(\RuntimeException::class);
+        $voteService->toggle(1, 1, 2);
+    }
+
+    public function testMemberCanLeaveButOwnerCannot(): void
+    {
+        $service = new GroupService(new GroupRepository($this->pdo));
+
+        $service->leave(1, 2);
+        self::assertNull((new GroupRepository($this->pdo))->findForMember(1, 2));
+
+        $this->expectException(\RuntimeException::class);
+        $service->leave(1, 1);
     }
 }

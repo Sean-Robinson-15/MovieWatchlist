@@ -62,6 +62,13 @@ final class WatchlistRepository
 
     public function aggregateForGroup(int $groupId, string $filter = 'planned'): array
     {
+        $sortColumns = [
+            'planned' => 'planned_count',
+            'watching' => 'watching_count',
+            'watched' => 'watched_count',
+        ];
+        $filter = $filter === 'all' ? 'all' : (array_key_exists($filter, $sortColumns) ? $filter : 'planned');
+
         $sql = 'SELECT m.id, m.title, m.overview, m.poster_path, m.release_date,
                        SUM(CASE WHEN wi.status = \'planned\' THEN 1 ELSE 0 END) AS planned_count,
                        SUM(CASE WHEN wi.status = \'watching\' THEN 1 ELSE 0 END) AS watching_count,
@@ -74,7 +81,7 @@ final class WatchlistRepository
         if ($filter === 'all') {
             $sql .= ' ORDER BY m.title COLLATE NOCASE';
         } else {
-            $column = $filter . '_count';
+            $column = $sortColumns[$filter];
             $sql .= " HAVING {$column} > 0 ORDER BY {$column} DESC, m.title COLLATE NOCASE";
         }
 

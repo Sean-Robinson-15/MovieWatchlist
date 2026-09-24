@@ -231,8 +231,9 @@ $router->get('/groups/{id}', static function (int $groupId) use ($view, $groupSe
 
     $userId = (int) $_SESSION['user_id'];
     $group = $groupService->getForMember($groupId, $userId);
-    $filter = in_array($_GET['filter'] ?? 'planned', ['all', 'planned', 'watching', 'watched'], true)
-        ? (string) $_GET['filter']
+    $requestedFilter = $_GET['filter'] ?? 'planned';
+    $filter = is_string($requestedFilter) && in_array($requestedFilter, ['all', 'planned', 'watching', 'watched'], true)
+        ? $requestedFilter
         : 'planned';
 
     return $view->render('group', [
