@@ -75,10 +75,5 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
-      - name: Show PHP and PHPUnit versions
-        run: |
-          php --version
-          vendor/bin/phpunit --version
-
       - name: Run ${{ matrix.story.name }} tests
         run: vendor/bin/phpunit "${{ matrix.story.path }}"
