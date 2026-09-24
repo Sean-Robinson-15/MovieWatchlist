@@ -20,12 +20,42 @@ jobs:
         story:
           - name: US-01 Create an account
             path: tests/epic01/us01
+          - name: US-02 Log into account
+            path: tests/epic01/us02
+          - name: US-03 Log out
+            path: tests/epic01/us03
+          - name: US-04 Search for movies
+            path: tests/epic02/us04
+          - name: US-05 Add a movie
+            path: tests/epic02/us05
+          - name: US-06 View my watchlist
+            path: tests/epic02/us06
           - name: US-07 Filter my watchlist
             path: tests/epic02/us07
+          - name: US-08 Update a watchlist item
+            path: tests/epic02/us08
+          - name: US-09 Remove a movie
+            path: tests/epic02/us09
           - name: US-10 Create a group
             path: tests/epic03/us10
+          - name: US-11 Join a group
+            path: tests/epic03/us11
+          - name: US-12 View group activity
+            path: tests/epic03/us12
+          - name: US-13 Leave a group
+            path: tests/epic03/us13
+          - name: US-14 Delete a group
+            path: tests/epic03/us14-delete
           - name: US-14 Vote on a film
             path: tests/epic03/us14-vote
+          - name: US-15 Usable error handling
+            path: tests/epic04/us15
+          - name: US-16 Maintainable structure
+            path: tests/epic04/us16
+          - name: US-17 Secure user data
+            path: tests/epic04/us17
+          - name: US-18 Application availability
+            path: tests/epic04/us18
 
     steps:
       - name: Check out source
