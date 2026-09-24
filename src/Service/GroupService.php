@@ -64,6 +64,18 @@ final class GroupService
         $this->groups->removeMember($groupId, $userId);
     }
 
+    public function delete(int $groupId, int $userId): void
+    {
+        $group = $this->getForMember($groupId, $userId);
+        if ($group['role'] !== 'owner' || (int) $group['created_by'] !== $userId) {
+            throw new RuntimeException('Only the group owner can delete this group.');
+        }
+
+        if (!$this->groups->delete($groupId, $userId)) {
+            throw new RuntimeException('The group could not be deleted.');
+        }
+    }
+
     public function members(int $groupId, int $userId): array
     {
         $this->getForMember($groupId, $userId);

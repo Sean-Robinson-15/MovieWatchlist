@@ -79,6 +79,9 @@ textarea { resize: vertical; }
 .status-counts span { padding: 5px 8px; color: var(--muted); background: var(--paper); font-size: .64rem; }
 .status-counts strong { color: var(--accent); }
 .group-meta { display: flex; justify-content: space-between; gap: 24px; padding: 28px 0 0; }
+.group-actions-list { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.button-danger { border-color: #a63d32; color: #fffdf8; background: #a63d32; }
+.button-danger:hover { border-color: #202322; background: #202322; }
 .group-meta > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
 .group-meta > div > span { width: 100%; color: var(--accent); font-size: .68rem; text-transform: uppercase; }
 .group-meta p { margin: 0; color: var(--muted); font-size: .7rem; }

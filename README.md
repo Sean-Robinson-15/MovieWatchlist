@@ -49,6 +49,6 @@ When `TMDB_API_KEY` is empty, search returns no external results but the rest of
 
 ## Groups
 
-Authenticated users can open **Groups**, create a group, or join one with its six-character code. A user may belong to multiple groups. Group pages use URLs such as `/groups/1` and show read-only aggregate counts from members' personal watchlists. Planned, Watching, and Watched sort by the number of members in that status; All sorts alphabetically.
+Authenticated users can open **Groups**, create a group, or join one with its six-character code. A user may belong to multiple groups. Group pages use URLs such as `/groups/1` and show read-only aggregate counts from members' personal watchlists. Planned, Watching, and Watched sort by the number of members in that status; All sorts alphabetically. Owners can delete their groups; members can leave them.
 
 The **Watch next** page gives each member one active vote. Voting for another movie moves the vote, and selecting the current movie again removes it. Votes never change another member's personal status, rating, or notes.

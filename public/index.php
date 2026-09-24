@@ -263,6 +263,24 @@ $router->post('/groups/{id}/leave', static function (int $groupId) use ($groupSe
     }
 });
 
+$router->post('/groups/{id}/delete', static function (int $groupId) use ($groupService): never {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: /login');
+        exit;
+    }
+
+    try {
+        Csrf::verify((string) ($_POST['_token'] ?? ''));
+        $groupService->delete($groupId, (int) $_SESSION['user_id']);
+        header('Location: /groups');
+        exit;
+    } catch (Throwable $error) {
+        $_SESSION['error'] = $error->getMessage();
+        header('Location: /groups/' . $groupId);
+        exit;
+    }
+});
+
 $router->get('/groups/{id}/watch-next', static function (int $groupId) use ($view, $groupService, $voteService): string {
     if (!isset($_SESSION['user_id'])) {
         header('Location: /login');

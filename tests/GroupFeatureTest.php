@@ -20,6 +20,7 @@ final class GroupFeatureTest extends TestCase
     {
         $this->pdo = new PDO('sqlite::memory:');
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->pdo->exec('PRAGMA foreign_keys = ON');
         $this->pdo->exec(file_get_contents(__DIR__ . '/../database/migrations/001_initial.sql'));
         $this->pdo->exec(file_get_contents(__DIR__ . '/../database/migrations/002_groups_and_votes.sql'));
         $this->pdo->exec("INSERT INTO users (email, password_hash) VALUES ('one@example.com', 'x'), ('two@example.com', 'x')");
@@ -100,5 +101,25 @@ final class GroupFeatureTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         $service->leave(1, 1);
+    }
+
+    public function testOnlyOwnerCanDeleteAGroup(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        (new GroupService(new GroupRepository($this->pdo)))->delete(1, 2);
+    }
+
+    public function testOwnerDeletionCascadesGroupDataButKeepsPersonalWatchlist(): void
+    {
+        $this->pdo->exec("INSERT INTO watchlist_items (user_id, movie_id, status) VALUES (1, 1, 'planned')");
+        $this->pdo->exec("INSERT INTO group_votes (group_id, user_id, movie_id) VALUES (1, 1, 1)");
+        $service = new GroupService(new GroupRepository($this->pdo));
+
+        $service->delete(1, 1);
+
+        self::assertFalse($this->pdo->query('SELECT 1 FROM groups WHERE id = 1')->fetchColumn() !== false);
+        self::assertFalse($this->pdo->query('SELECT 1 FROM group_memberships WHERE group_id = 1')->fetchColumn() !== false);
+        self::assertFalse($this->pdo->query('SELECT 1 FROM group_votes WHERE group_id = 1')->fetchColumn() !== false);
+        self::assertTrue($this->pdo->query('SELECT 1 FROM watchlist_items WHERE user_id = 1 AND movie_id = 1')->fetchColumn() !== false);
     }
 }

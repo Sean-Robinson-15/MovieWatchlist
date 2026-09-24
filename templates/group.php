@@ -12,7 +12,10 @@
 </section>
 <section class="group-meta">
     <div><span>Members</span><?php foreach ($members as $member): ?><p><?= htmlspecialchars($member['email'], ENT_QUOTES, 'UTF-8') ?><?= $member['role'] === 'owner' ? ' · owner' : '' ?></p><?php endforeach; ?></div>
-    <?php if ($group['role'] === 'member'): ?><form method="post" action="/groups/<?= (int) $group['id'] ?>/leave"><input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Infrastructure\Csrf::token(), ENT_QUOTES, 'UTF-8') ?>"><button class="button button-quiet" type="submit">Leave group</button></form><?php endif; ?>
+    <div class="group-actions-list">
+        <?php if ($group['role'] === 'member'): ?><form method="post" action="/groups/<?= (int) $group['id'] ?>/leave"><input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Infrastructure\Csrf::token(), ENT_QUOTES, 'UTF-8') ?>"><button class="button button-quiet" type="submit">Leave group</button></form><?php endif; ?>
+        <?php if ($group['role'] === 'owner'): ?><form method="post" action="/groups/<?= (int) $group['id'] ?>/delete" onsubmit="return confirm('Delete this group for all members?');"><input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Infrastructure\Csrf::token(), ENT_QUOTES, 'UTF-8') ?>"><button class="button button-danger" type="submit">Delete group</button></form><?php endif; ?>
+    </div>
 </section>
 <?php if ($items === []): ?>
 <section class="empty-state"><div class="empty-mark">+</div><h2>No films in this view.</h2><p>When group members save films to their personal watchlists, the shared counts will appear here.</p></section>

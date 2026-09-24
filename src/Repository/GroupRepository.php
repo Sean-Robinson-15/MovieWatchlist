@@ -89,6 +89,16 @@ final class GroupRepository
         $statement->execute(['group_id' => $groupId, 'user_id' => $userId]);
     }
 
+    public function delete(int $groupId, int $ownerId): bool
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE FROM groups WHERE id = :group_id AND created_by = :owner_id'
+        );
+        $statement->execute(['group_id' => $groupId, 'owner_id' => $ownerId]);
+
+        return $statement->rowCount() === 1;
+    }
+
     public function members(int $groupId): array
     {
         $statement = $this->pdo->prepare(
