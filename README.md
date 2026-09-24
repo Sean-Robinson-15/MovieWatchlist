@@ -6,7 +6,7 @@ A server-rendered PHP movie watchlist built with an N-Tier architecture.
 
 - PHP 8.2 or newer with the `pdo_sqlite` extension
 - Composer
-- A TMDB API key for movie search (added in the next feature slice)
+- A TMDB API key for movie search 
 
 ## Layers
 
@@ -37,7 +37,7 @@ A server-rendered PHP movie watchlist built with an N-Tier architecture.
 composer serve
 ```
 
-5. Open <http://localhost:8002>.
+5. Open <http://localhost:8000>.
 
 The SQLite database is created automatically at `storage/database.sqlite` on the first request. Numbered migrations are applied automatically, including upgrades to an existing database.
 

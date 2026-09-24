@@ -52,7 +52,7 @@
 
 **As an** authenticated user, **I want** to search for movies by title, **so that** I can find films to add to my watchlist.
 
-**Accpetance Criteria**
+**Acceptance Criteria**
 
 - [ ] The search page is only accessible to authenticated users
 - [ ] The user can enter a movie title or search term
