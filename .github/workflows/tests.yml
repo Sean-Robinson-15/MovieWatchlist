@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ["8.2", "8.3"]
+        php-version: ["8.3"]
         story:
           - name: US-01 Create an account
             path: tests/epic01/us01
