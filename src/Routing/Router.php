@@ -43,6 +43,6 @@ final class Router
             return 'Page not found';
         }
 
-        return $handler(...$parameters);
+        return $handler(...array_values($parameters));
     }
 }
