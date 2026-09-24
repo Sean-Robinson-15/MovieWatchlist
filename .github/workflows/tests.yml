@@ -17,6 +17,15 @@ jobs:
       fail-fast: false
       matrix:
         php-version: ["8.2", "8.3"]
+        story:
+          - name: US-01 Create an account
+            path: tests/epic01/us01
+          - name: US-07 Filter my watchlist
+            path: tests/epic02/us07
+          - name: US-10 Create a group
+            path: tests/epic03/us10
+          - name: US-14 Vote on a film
+            path: tests/epic03/us14-vote
 
     steps:
       - name: Check out source
@@ -36,5 +45,5 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
-      - name: Run PHPUnit tests
-        run: composer test
+      - name: Run ${{ matrix.story.name }} tests
+        run: vendor/bin/phpunit "${{ matrix.story.path }}"
