@@ -21,8 +21,9 @@ final class GroupFeatureTest extends TestCase
         $this->pdo = new PDO('sqlite::memory:');
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->pdo->exec('PRAGMA foreign_keys = ON');
-        $this->pdo->exec(file_get_contents(__DIR__ . '/../database/migrations/001_initial.sql'));
-        $this->pdo->exec(file_get_contents(__DIR__ . '/../database/migrations/002_groups_and_votes.sql'));
+        $migrationDirectory = dirname(__DIR__, 4) . '/database/migrations';
+        $this->pdo->exec((string) file_get_contents($migrationDirectory . '/001_initial.sql'));
+        $this->pdo->exec((string) file_get_contents($migrationDirectory . '/002_groups_and_votes.sql'));
         $this->pdo->exec("INSERT INTO users (email, password_hash) VALUES ('one@example.com', 'x'), ('two@example.com', 'x')");
         $this->pdo->exec("INSERT INTO movies (tmdb_id, title) VALUES (1, 'Beta'), (2, 'Alpha')");
         $this->pdo->exec("INSERT INTO groups (name, join_code, created_by) VALUES ('Film Club', 'ABC123', 1)");
