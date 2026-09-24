@@ -8,13 +8,15 @@ Every single Acceptance Criterion in UserStories.md must be covered by appropria
 
 Tests must be strictly organized by Epic and User Story:
 
+```
 tests/
 └── epic01/
     └── us01/
         ├── unit/
         ├── integration/
         └── acceptance/
-		
+```
+	
 ## Traceability: 
 
 Each test file or function must explicitly reference the specific Acceptance Criterion ID or requirement it verifies (e.g., via comments, docstrings, or test function naming like test_us01_ac02_valid_login).
